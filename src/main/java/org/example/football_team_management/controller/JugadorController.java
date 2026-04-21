@@ -1,6 +1,7 @@
 package org.example.football_team_management.controller;
 
 import org.example.football_team_management.dto.JugadorDto;
+import org.example.football_team_management.repository.JugadorRepository;
 import org.example.football_team_management.service.JugadorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,22 @@ public class JugadorController {
         List<JugadorDto> jugadores = jugadorService.listar();
         return ResponseEntity.ok(jugadores); // 200 OK
     }
+    //consultas nativas----------------------------------------------------------------------
+    @GetMapping("/equipo/{id}")
+    public ResponseEntity<List<JugadorDto>> jugadoresPorEquipo(@PathVariable int id) {
+        List<JugadorDto> jugadores = jugadorService.jugadoresPorEquipo(id);
+        return ResponseEntity.ok(jugadores);
+    }
+    @GetMapping("/goles")
+    public ResponseEntity<List<JugadorDto>> jugadoresConMasGoles(@RequestParam int goles) {
+        return ResponseEntity.ok(jugadorService.jugadoresConMasDeXGoles(goles));
+    }
 
+    @GetMapping("/equipos/{id}/goles")
+    public ResponseEntity<Integer> totalGolesEquipo(@PathVariable int id) {
+        return ResponseEntity.ok(jugadorService.totalGolesEquipo(id));
+    }
+//---------------------------------------------------------------------------------------------
     // GUARDAR
     @PostMapping("/guardar")
     public ResponseEntity<JugadorDto> guardar(@RequestBody JugadorDto dto) {

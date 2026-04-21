@@ -55,17 +55,7 @@ public class JugadorServiceImpl implements JugadorService {
         return convertirADto(actualizado);
     }
 
-    // Convierte entidad a DTO
-    private JugadorDto convertirADto(Jugador jugador) {
-        return new JugadorDto(
-                jugador.getNombre(),
-                jugador.getPosicion(),
-                jugador.getDorsal(),
-                jugador.getFechaNac(),
-                jugador.getNacionalidad(),
-                jugador.getEquipo()
-        );
-    }
+
 
     // Convierte DTO a entidad
     private Jugador convertirAEntity(JugadorDto dto) {
@@ -78,5 +68,34 @@ public class JugadorServiceImpl implements JugadorService {
         jugador.setEquipo(dto.getEquipo());
         return jugador;
     }
+    private JugadorDto convertirADto(Jugador j) {
+        JugadorDto dto = new JugadorDto();
+        dto.setIdJugador(j.getIdJugador());
+        dto.setNombre(j.getNombre());
+        dto.setPosicion(j.getPosicion());
+        dto.setDorsal(j.getDorsal());
+        dto.setNacionalidad(j.getNacionalidad());
+        dto.setEquipo(equipo.getNombre());
+        return dto;
+    }
+
+    public List<JugadorDto> jugadoresPorEquipo(int idEquipo) {
+        return jugadorRepository.jugadoresPorEquipo(idEquipo)
+                .stream()
+                .map(this::convertirADto)
+                .toList();
+    }
+
+    public List<JugadorDto> jugadoresConMasDeXGoles(int goles) {
+        return jugadorRepository.jugadoresConMasDeXGoles(goles)
+                .stream()
+                .map(this::convertirADto)
+                .toList();
+    }
+
+    public Integer totalGolesEquipo(int idEquipo) {
+        return jugadorRepository.totalGolesEquipo(idEquipo);
+    }
+
 }
 

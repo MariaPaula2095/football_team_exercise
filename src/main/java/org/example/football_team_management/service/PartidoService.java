@@ -9,6 +9,8 @@ public interface PartidoService {
     // Lista todos los partidos
     List<PartidoDto> listar();
 
+    List<PartidoDto> resultadosPartidos();
+
     // Guarda un nuevo partido
     PartidoDto guardar(PartidoDto partido);
 

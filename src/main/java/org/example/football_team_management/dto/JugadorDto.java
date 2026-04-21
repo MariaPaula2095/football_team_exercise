@@ -16,6 +16,7 @@ import java.time.LocalDate;
 
 @Builder
 public class JugadorDto {
+    private Long idJugador;
     private String nombre;
     private String posicion;
     private Integer dorsal;

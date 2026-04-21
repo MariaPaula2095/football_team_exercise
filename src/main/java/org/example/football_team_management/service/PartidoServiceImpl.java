@@ -25,6 +25,19 @@ public class PartidoServiceImpl implements PartidoService {
                 .map(this::convertirADto)
                 .collect(Collectors.toList());
     }
+    @Override
+    public List<PartidoDto> resultadosPartidos() {
+
+        List<Object[]> datos = partidoRepository.resultadosPartidos();
+
+        return datos.stream().map(obj -> new PartidoDto (
+                obj[0].toString(),
+                obj[1].toString(),
+                obj[2].toString(),
+                (Long) obj[3],
+                (Lo) obj[4]
+        )).toList();
+    }
 
     @Override
     public PartidoDto guardar(PartidoDto dto) {
