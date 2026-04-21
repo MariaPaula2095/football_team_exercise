@@ -48,22 +48,12 @@ public class JugadorController {
 
     // CONSULTAS NATIVAS
 
-    // 1
-    @GetMapping("/equipo/{id}")
-    public List<JugadorDto> jugadoresPorEquipo(@PathVariable int id) {
-        return jugadorService.jugadoresPorEquipo(id);
+    @GetMapping("/equipo/{equipoId}")
+    public ResponseEntity<List<JugadorDto>> jugadoresPorEquipo(@PathVariable Long equipoId) {
+        return ResponseEntity.ok(jugadorService.obtenerJugadoresPorEquipo(equipoId));
     }
-
-
-    // 2
-    @GetMapping("/goles")
-    public List<JugadorDto> jugadoresConMasDeXGoles(@RequestParam int goles) {
-        return jugadorService.jugadoresConMasDeXGoles(goles);
-    }
-
-    // 3
-    @GetMapping("/total-goles/{id}")
-    public Integer totalGolesEquipo(@PathVariable int id) {
-        return jugadorService.totalGolesEquipo(id);
+    @GetMapping("/goles-mayores")
+    public ResponseEntity<List<JugadorDto>> jugadoresConMasGoles(@RequestParam Integer minGoles) {
+        return ResponseEntity.ok(jugadorService.obtenerJugadoresConMasDeXGoles(minGoles));
     }
 }

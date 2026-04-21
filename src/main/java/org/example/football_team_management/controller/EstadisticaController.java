@@ -18,26 +18,26 @@ public class EstadisticaController {
         this.estadisticaService = estadisticaService;
     }
 
-    @GetMapping("/listar")
+    // CRUD
+    @GetMapping ("/Listar/partido-jugador")
     public ResponseEntity<List<EstadisticasJugadorDto>> listar() {
         return ResponseEntity.ok(estadisticaService.listar());
     }
 
-    // Asignar goles a un jugador en un partido
-    @PostMapping("/guardar")
-    public ResponseEntity<EstadisticasJugadorDto> guardar(@RequestBody EstadisticasJugadorDto dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(estadisticaService.guardar(dto));
+
+    @PostMapping ("/Guardar/partido-jugador")
+    public ResponseEntity<EstadisticasJugadorDto> crear(@RequestBody EstadisticasJugadorDto dto) {
+        return new ResponseEntity<>(estadisticaService.guardar(dto), HttpStatus.CREATED);
     }
 
-    // Jugadores con más de X goles
-    @GetMapping("/goles")
-    public ResponseEntity<List<EstadisticasJugadorDto>> jugadoresConMasDeXGoles(@RequestParam int goles) {
-        return ResponseEntity.ok(estadisticaService.jugadoresConMasDeXGoles(goles));
+    @PutMapping("/Actualizar/partido-jugador/{id}")
+    public ResponseEntity<EstadisticasJugadorDto> actualizar(@PathVariable Long id, @RequestBody EstadisticasJugadorDto dto) {
+        return ResponseEntity.ok(estadisticaService.actualizar(id, dto));
     }
 
-    // Total goles de un equipo
-    @GetMapping("/total-goles/{idEquipo}")
-    public ResponseEntity<Integer> totalGolesEquipo(@PathVariable int idEquipo) {
-        return ResponseEntity.ok(estadisticaService.totalGolesEquipo(idEquipo));
+    @DeleteMapping("(/Eliminar/partido-jugador/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+        estadisticaService.eliminar(id);
+        return ResponseEntity.noContent().build();
     }
 }
