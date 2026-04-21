@@ -15,8 +15,9 @@ import org.example.football_team_management.model.Partido;
 
 public class EstadisticasJugadorDto {
     private Long idEstadistica;
-    private Jugador jugador;
-    private Partido partido;
+    private Long idJugador;
+    private String nombreJugador;
+    private Long idPartido;
     private Integer minutosJugados;
     private Integer goles;
     private Integer asistencias;

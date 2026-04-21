@@ -18,6 +18,7 @@ public class Jugador {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idJugador;
+
     private String nombre;
     private String posicion;
     private Integer dorsal;

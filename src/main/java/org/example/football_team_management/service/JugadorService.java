@@ -1,6 +1,7 @@
 package org.example.football_team_management.service;
 
 import org.example.football_team_management.dto.JugadorDto;
+import org.example.football_team_management.model.Jugador;
 
 import java.util.List;
 

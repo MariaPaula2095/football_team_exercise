@@ -15,12 +15,16 @@ import java.time.LocalDate;
 @AllArgsConstructor
 
 @Builder
+
 public class JugadorDto {
+
     private Long idJugador;
     private String nombre;
     private String posicion;
     private Integer dorsal;
     private LocalDate fechaNac;
     private String nacionalidad;
-    private Equipo equipo;
+
+
+    private Long idEquipo;
 }

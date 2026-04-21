@@ -9,42 +9,35 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/estadisticas") // Ruta base
+@RequestMapping("/api/estadisticas")
 public class EstadisticaController {
 
     private final EstadisticaService estadisticaService;
 
-    // Inyeccion por constructor
     public EstadisticaController(EstadisticaService estadisticaService) {
         this.estadisticaService = estadisticaService;
     }
 
-    // LISTAR
     @GetMapping("/listar")
     public ResponseEntity<List<EstadisticasJugadorDto>> listar() {
-        List<EstadisticasJugadorDto> lista = estadisticaService.listar();
-        return ResponseEntity.ok(lista); // 200 OK
+        return ResponseEntity.ok(estadisticaService.listar());
     }
 
-    // GUARDAR
+    // Asignar goles a un jugador en un partido
     @PostMapping("/guardar")
     public ResponseEntity<EstadisticasJugadorDto> guardar(@RequestBody EstadisticasJugadorDto dto) {
-        EstadisticasJugadorDto guardado = estadisticaService.guardar(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(guardado); // 201 CREATED
+        return ResponseEntity.status(HttpStatus.CREATED).body(estadisticaService.guardar(dto));
     }
 
-    // ELIMINAR
-    @DeleteMapping("/eliminar/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        estadisticaService.eliminar(id);
-        return ResponseEntity.noContent().build(); // 204 NO CONTENT
+    // Jugadores con más de X goles
+    @GetMapping("/goles")
+    public ResponseEntity<List<EstadisticasJugadorDto>> jugadoresConMasDeXGoles(@RequestParam int goles) {
+        return ResponseEntity.ok(estadisticaService.jugadoresConMasDeXGoles(goles));
     }
 
-    // ACTUALIZAR
-    @PutMapping("/actualizar/{id}")
-    public ResponseEntity<EstadisticasJugadorDto> actualizar(@PathVariable Long id,
-                                                             @RequestBody EstadisticasJugadorDto dto) {
-        EstadisticasJugadorDto actualizado = estadisticaService.actualizar(id, dto);
-        return ResponseEntity.ok(actualizado); // 200 OK
+    // Total goles de un equipo
+    @GetMapping("/total-goles/{idEquipo}")
+    public ResponseEntity<Integer> totalGolesEquipo(@PathVariable int idEquipo) {
+        return ResponseEntity.ok(estadisticaService.totalGolesEquipo(idEquipo));
     }
 }

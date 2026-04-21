@@ -1,7 +1,6 @@
 package org.example.football_team_management.controller;
 
 import org.example.football_team_management.dto.JugadorDto;
-import org.example.football_team_management.repository.JugadorRepository;
 import org.example.football_team_management.service.JugadorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,56 +9,61 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/jugadores") // Ruta base de jugadores
+@RequestMapping("/api/jugadores")
 public class JugadorController {
 
     private final JugadorService jugadorService;
 
-    // Inyeccion por constructor
     public JugadorController(JugadorService jugadorService) {
         this.jugadorService = jugadorService;
     }
+    // ================= CRUD =================
 
-    // LISTAR
-    @GetMapping("/listar")
+    // LISTAR TODOS
+    @GetMapping ("/listar")
     public ResponseEntity<List<JugadorDto>> listar() {
-        List<JugadorDto> jugadores = jugadorService.listar();
-        return ResponseEntity.ok(jugadores); // 200 OK
-    }
-    //consultas nativas----------------------------------------------------------------------
-    @GetMapping("/equipo/{id}")
-    public ResponseEntity<List<JugadorDto>> jugadoresPorEquipo(@PathVariable int id) {
-        List<JugadorDto> jugadores = jugadorService.jugadoresPorEquipo(id);
-        return ResponseEntity.ok(jugadores);
-    }
-    @GetMapping("/goles")
-    public ResponseEntity<List<JugadorDto>> jugadoresConMasGoles(@RequestParam int goles) {
-        return ResponseEntity.ok(jugadorService.jugadoresConMasDeXGoles(goles));
+        return ResponseEntity.ok(jugadorService.listar());
     }
 
-    @GetMapping("/equipos/{id}/goles")
-    public ResponseEntity<Integer> totalGolesEquipo(@PathVariable int id) {
-        return ResponseEntity.ok(jugadorService.totalGolesEquipo(id));
-    }
-//---------------------------------------------------------------------------------------------
     // GUARDAR
-    @PostMapping("/guardar")
+    @PostMapping ("/guardar")
     public ResponseEntity<JugadorDto> guardar(@RequestBody JugadorDto dto) {
-        JugadorDto guardado = jugadorService.guardar(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(guardado); // 201 CREATED
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(jugadorService.guardar(dto));
     }
 
-    // ELIMINAR
-    @DeleteMapping("/eliminar/{id}")
+    // ELIMINAR ("/guardar")
+    @DeleteMapping ("/eliminar/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         jugadorService.eliminar(id);
-        return ResponseEntity.noContent().build(); // 204 NO CONTENT
+        return ResponseEntity.noContent().build();
     }
 
     // ACTUALIZAR
-    @PutMapping("/actualizar/{id}")
-    public ResponseEntity<JugadorDto> actualizar(@PathVariable Long id, @RequestBody JugadorDto dto) {
-        JugadorDto actualizado = jugadorService.actualizar(id, dto);
-        return ResponseEntity.ok(actualizado); // 200 OK
+    @PutMapping ("/actualizar/{id}")
+    public ResponseEntity<JugadorDto> actualizar(@PathVariable Long id,
+                                                 @RequestBody JugadorDto dto) {
+        return ResponseEntity.ok(jugadorService.actualizar(id, dto));
+    }
+
+    // CONSULTAS NATIVAS
+
+    // 1
+    @GetMapping("/equipo/{id}")
+    public List<JugadorDto> jugadoresPorEquipo(@PathVariable int id) {
+        return jugadorService.jugadoresPorEquipo(id);
+    }
+
+
+    // 2
+    @GetMapping("/goles")
+    public List<JugadorDto> jugadoresConMasDeXGoles(@RequestParam int goles) {
+        return jugadorService.jugadoresConMasDeXGoles(goles);
+    }
+
+    // 3
+    @GetMapping("/total-goles/{id}")
+    public Integer totalGolesEquipo(@PathVariable int id) {
+        return jugadorService.totalGolesEquipo(id);
     }
 }

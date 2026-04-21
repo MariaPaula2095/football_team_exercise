@@ -18,20 +18,20 @@ public interface JugadorRepository extends JpaRepository<Jugador, Long> {
     // 2. Total goles de un equipo
     @Query(value = """
     SELECT SUM(e.goles)
-    FROM estadisticas_jugador e
+    FROM estadistica_jugador e
     JOIN jugador j ON e.id_jugador = j.id_jugador
     WHERE j.id_equipo = :idEquipo
-    """, nativeQuery = true)
+""", nativeQuery = true)
     Integer totalGolesEquipo(@Param("idEquipo") int idEquipo);
 
 
     // 3. Jugadores con más de X goles
     @Query(value = """
-    SELECT j.*
-    FROM jugador j
-    JOIN estadisticas_jugador e ON j.id_jugador = e.id_jugador
-    GROUP BY j.id_jugador
+    SELECT j.id_jugador, j.nombre, j.posicion, j.dorsal, SUM(e.goles) AS total_goles
+    FROM estadistica_jugador e
+    JOIN jugador j ON e.id_jugador = j.id_jugador
+    GROUP BY j.id_jugador, j.nombre, j.posicion, j.dorsal
     HAVING SUM(e.goles) > :goles
-    """, nativeQuery = true)
-    List<Jugador> jugadoresConMasDeXGoles(@Param("goles") int goles);
-}
+""", nativeQuery = true)
+    List<Object[]> jugadoresConMasDeXGoles(@Param("goles") int goles);
+    }
