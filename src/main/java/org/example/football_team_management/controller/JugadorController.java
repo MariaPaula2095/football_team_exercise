@@ -1,6 +1,7 @@
 package org.example.football_team_management.controller;
 
 import org.example.football_team_management.dto.JugadorDto;
+import org.example.football_team_management.model.Jugador;
 import org.example.football_team_management.service.JugadorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,22 +49,15 @@ public class JugadorController {
 
     // CONSULTAS NATIVAS
 
-    // 1
-    @GetMapping("/equipo/{id}")
-    public List<JugadorDto> jugadoresPorEquipo(@PathVariable int id) {
-        return jugadorService.jugadoresPorEquipo(id);
+    // GET /api/jugadores/equipo/{equipoId}
+    @GetMapping("/equipo/{equipoId}")
+    public ResponseEntity<List<Jugador>> getJugadoresByEquipo(@PathVariable Integer equipoId) {
+        return ResponseEntity.ok(jugadorService.getJugadoresByEquipo(equipoId));
     }
 
-
-    // 2
-    @GetMapping("/goles")
-    public List<JugadorDto> jugadoresConMasDeXGoles(@RequestParam int goles) {
-        return jugadorService.jugadoresConMasDeXGoles(goles);
-    }
-
-    // 3
-    @GetMapping("/total-goles/{id}")
-    public Integer totalGolesEquipo(@PathVariable int id) {
-        return jugadorService.totalGolesEquipo(id);
+    // GET /api/jugadores/goles-mayores?minGoles=5
+    @GetMapping("/goles-mayores")
+    public ResponseEntity<List<Jugador>> getJugadoresConGolesMayores(@RequestParam Integer minGoles) {
+        return ResponseEntity.ok(jugadorService.getJugadoresWithGoalsGreaterThan(minGoles));
     }
 }

@@ -1,6 +1,7 @@
 package org.example.football_team_management.controller;
 
 import org.example.football_team_management.dto.PartidoDto;
+import org.example.football_team_management.dto.ResultadoPartidoDTO;
 import org.example.football_team_management.service.PartidoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,9 +40,15 @@ public class PartidoController {
         return ResponseEntity.ok(partidoService.actualizar(id, dto));
     }
 
-    // ✅ ENDPOINT FALTANTE - Resultados con nombres de equipos
+    // GET /api/partidos/total-goles/{equipoId}
+    @GetMapping("/total-goles/{equipoId}")
+    public ResponseEntity<Integer> getTotalGolesEquipo(@PathVariable Integer equipoId) {
+        return ResponseEntity.ok(partidoService.getTotalGolesByEquipo(equipoId));
+    }
+
+    // GET /api/partidos/resultados
     @GetMapping("/resultados")
-    public ResponseEntity<List<PartidoDto>> resultadosPartidos() {
-        return ResponseEntity.ok(partidoService.resultadosPartidos());
+    public ResponseEntity<List<ResultadoPartidoDTO>> getResultados() {
+        return ResponseEntity.ok(partidoService.getResultadosConNombres());
     }
 }

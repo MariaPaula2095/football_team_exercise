@@ -1,12 +1,14 @@
 package org.example.football_team_management.service;
 
 import org.example.football_team_management.dto.PartidoDto;
+import org.example.football_team_management.dto.ResultadoPartidoDTO;
 import org.example.football_team_management.model.Equipo;
 import org.example.football_team_management.model.Partido;
 import org.example.football_team_management.repository.EquipoRepository;
 import org.example.football_team_management.repository.PartidoRepository;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,26 +77,18 @@ public class PartidoServiceImpl implements PartidoService {
     // ================= CONSULTA NATIVA =================
 
     @Override
-    public List<PartidoDto> resultadosPartidos() {
-        List<Object[]> datos = partidoRepository.resultadosPartidos();
+    public Integer getTotalGolesByEquipo(Integer equipoId) {
+        return partidoRepository.findTotalGolesByEquipoId(equipoId);
+    }
 
-        return datos.stream().map(obj -> {
-            PartidoDto dto = new PartidoDto();
-
-            // ✅ Null check ANTES del cast
-            dto.setFecha(obj[0] != null
-                    ? ((java.sql.Date) obj[0]).toLocalDate()
-                    : null);
-
-            // ✅ Usar Number para evitar ClassCastException
-            dto.setIdEquipoLocal(obj[1] != null ? ((Number) obj[1]).longValue() : null);
-            dto.setIdEquipoVisita(obj[2] != null ? ((Number) obj[2]).longValue() : null);
-
-            dto.setGolesLocal(obj[3] != null ? ((Number) obj[3]).intValue() : 0);
-            dto.setGolesVisita(obj[4] != null ? ((Number) obj[4]).intValue() : 0);
-
-            return dto;
-        }).collect(Collectors.toList());
+    @Override
+    public List<ResultadoPartidoDTO> getResultadosConNombres() {
+        List<Object[]> resultados = partidoRepository.findResultadosConNombresEquipos();
+        return resultados.stream().map(row -> new ResultadoPartidoDTO(
+                (Integer) row[0], (Date) row[1], (String) row[2],
+                (String) row[3], (Integer) row[4],
+                (String) row[5], (Integer) row[6]
+        )).collect(Collectors.toList());
     }
 
     // ================= CONVERSIONES =================

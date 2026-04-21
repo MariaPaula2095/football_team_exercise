@@ -65,33 +65,16 @@ public class JugadorServiceImpl implements JugadorService {
     // ================= CONSULTAS =================
 
     @Override
-    public List<JugadorDto> jugadoresPorEquipo(int idEquipo) {
-        return jugadorRepository.jugadoresPorEquipo(idEquipo)
-                .stream()
-                .map(this::convertirADto)
-                .toList();
+    public List<Jugador> getJugadoresByEquipo(Integer equipoId) {
+        return jugadorRepository.findJugadoresByEquipoId(equipoId);
     }
 
     @Override
-    public List<JugadorDto> jugadoresConMasDeXGoles(int goles) {
-        return jugadorRepository.jugadoresConMasDeXGoles(goles)
-                .stream()
-                .map(obj -> {
-                    JugadorDto dto = new JugadorDto();
-                    dto.setIdJugador(obj[0] != null ? ((Number) obj[0]).longValue() : null);
-                    dto.setNombre(obj[1] != null ? obj[1].toString() : null);
-                    dto.setPosicion(obj[2] != null ? obj[2].toString() : null);
-                    dto.setDorsal(obj[3] != null ? ((Number) obj[3]).intValue() : null);
-                    // obj[4] es total_goles — puedes ignorarlo o agregarlo al DTO si quieres mostrarlo
-                    return dto;
-                })
-                .collect(Collectors.toList());
+    public List<Jugador> getJugadoresWithGoalsGreaterThan(Integer goles) {
+        return jugadorRepository.findJugadoresConGolesMayoresA(goles);
     }
 
-    @Override
-    public Integer totalGolesEquipo(int idEquipo) {
-        return jugadorRepository.totalGolesEquipo(idEquipo);
-    }
+
 
     // ================= CONVERSIONES =================
 

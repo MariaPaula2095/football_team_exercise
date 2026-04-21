@@ -29,11 +29,7 @@ public class EstadisticaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(estadisticaService.guardar(dto));
     }
 
-    // Jugadores con más de X goles
-    @GetMapping("/goles")
-    public ResponseEntity<List<EstadisticasJugadorDto>> jugadoresConMasDeXGoles(@RequestParam int goles) {
-        return ResponseEntity.ok(estadisticaService.jugadoresConMasDeXGoles(goles));
-    }
+
 
     // Total goles de un equipo
     @GetMapping("/total-goles/{idEquipo}")

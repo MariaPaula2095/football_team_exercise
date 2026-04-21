@@ -55,19 +55,6 @@ public class EstadisticaServiceImpl implements EstadisticaService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<EstadisticasJugadorDto> jugadoresConMasDeXGoles(int goles) {
-        return estadisticaRepository.jugadoresConMasDeXGoles(goles)
-                .stream()
-                .map(obj -> {
-                    EstadisticasJugadorDto dto = new EstadisticasJugadorDto();
-                    dto.setIdJugador(obj[0] != null ? ((Number) obj[0]).longValue() : null);
-                    dto.setNombreJugador(obj[1] != null ? obj[1].toString() : null);
-                    dto.setGoles(obj[4] != null ? ((Number) obj[4]).intValue() : 0);
-                    return dto;
-                })
-                .collect(Collectors.toList());
-    }
 
     @Override
     public Integer totalGolesEquipo(int idEquipo) {
