@@ -1,38 +1,64 @@
 package org.example.football_team_management.service;
 
 import org.example.football_team_management.dto.JugadorDto;
-import org.example.football_team_management.model.Equipo;
 import org.example.football_team_management.model.Jugador;
+import org.example.football_team_management.model.Equipo;
 import org.example.football_team_management.repository.JugadorRepository;
+import org.example.football_team_management.repository.EquipoRepository;
+import org.example.football_team_management.service.JugadorService;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class JugadorServiceImpl implements JugadorService {
-
     private final JugadorRepository jugadorRepository;
+    private final EquipoRepository equipoRepository;
 
-    public JugadorServiceImpl(JugadorRepository jugadorRepository) {
+    public JugadorServiceImpl(JugadorRepository jugadorRepository, EquipoRepository equipoRepository) {
         this.jugadorRepository = jugadorRepository;
+        this.equipoRepository = equipoRepository;
     }
 
-    // ================= CRUD =================
+    private JugadorDto convertirADto(Jugador j) {
+        return new JugadorDto(
+                j.getIdJugador(), j.getNombre(), j.getPosicion(), j.getDorsal(),
+                j.getFechaNac(), j.getNacionalidad(),
+                j.getEquipo() != null ? j.getEquipo().getIdEquipo() : null
+        );
+    }
+
+    private Jugador convertirAEntity(JugadorDto dto) {
+        Jugador j = new Jugador();
+        j.setIdJugador(dto.getIdJugador());
+        j.setNombre(dto.getNombre());
+        j.setPosicion(dto.getPosicion());
+        j.setDorsal(dto.getDorsal());
+        j.setFechaNac(dto.getFechaNac());
+        j.setNacionalidad(dto.getNacionalidad());
+        if (dto.getIdEquipo() != null) {
+            Equipo e = equipoRepository.findById(dto.getIdEquipo()).orElseThrow();
+            j.setEquipo(e);
+        }
+        return j;
+    }
 
     @Override
     public List<JugadorDto> listar() {
-        return jugadorRepository.findAll()
-                .stream()
-                .map(this::convertirADto)
-                .collect(Collectors.toList());
+        return jugadorRepository.findAll().stream().map(this::convertirADto).collect(Collectors.toList());
     }
+
 
     @Override
     public JugadorDto guardar(JugadorDto dto) {
-        Jugador jugador = convertirAEntity(dto);
-        Jugador guardado = jugadorRepository.save(jugador);
-        return convertirADto(guardado);
+        return convertirADto(jugadorRepository.save(convertirAEntity(dto)));
+    }
+
+    @Override
+    public JugadorDto actualizar(Long id, JugadorDto dto) {
+        if (!jugadorRepository.existsById(id)) throw new RuntimeException("No existe");
+        dto.setIdJugador(id);
+        return guardar(dto);
     }
 
     @Override
@@ -40,75 +66,16 @@ public class JugadorServiceImpl implements JugadorService {
         jugadorRepository.deleteById(id);
     }
 
+    // ---------- Consultas nativas ----------
     @Override
-    public JugadorDto actualizar(Long id, JugadorDto dto) {
-        Jugador existente = jugadorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Jugador no encontrado"));
-
-        existente.setNombre(dto.getNombre());
-        existente.setPosicion(dto.getPosicion());
-        existente.setDorsal(dto.getDorsal());
-        existente.setFechaNac(dto.getFechaNac());
-        existente.setNacionalidad(dto.getNacionalidad());
-        if (dto.getIdEquipo() != null) {
-            Equipo equipo = new Equipo();
-            equipo.setIdEquipo(dto.getIdEquipo());
-            existente.setEquipo(equipo);
-        }
-
-        Jugador actualizado = jugadorRepository.save(existente);
-
-        return convertirADto(actualizado);
-    }
-
-
-    // ================= CONSULTAS =================
-
-    @Override
-    public List<Jugador> getJugadoresByEquipo(Integer equipoId) {
-        return jugadorRepository.findJugadoresByEquipoId(equipoId);
+    public List<JugadorDto> obtenerJugadoresPorEquipo(Long equipoId) {
+        return jugadorRepository.findJugadoresByEquipoId(equipoId)
+                .stream().map(this::convertirADto).collect(Collectors.toList());
     }
 
     @Override
-    public List<Jugador> getJugadoresWithGoalsGreaterThan(Integer goles) {
-        return jugadorRepository.findJugadoresConGolesMayoresA(goles);
-    }
-
-
-
-    // ================= CONVERSIONES =================
-
-    private JugadorDto convertirADto(Jugador j) {
-        JugadorDto dto = new JugadorDto();
-
-        dto.setIdJugador(j.getIdJugador());
-        dto.setNombre(j.getNombre());
-        dto.setPosicion(j.getPosicion());
-        dto.setDorsal(j.getDorsal());
-        dto.setFechaNac(j.getFechaNac());
-        dto.setNacionalidad(j.getNacionalidad());
-
-        if (j.getEquipo() != null) {
-            dto.setIdEquipo(j.getEquipo().getIdEquipo());
-        }
-
-        return dto;
-    }
-    private Jugador convertirAEntity(JugadorDto dto) {
-        Jugador jugador = new Jugador();
-
-        jugador.setNombre(dto.getNombre());
-        jugador.setPosicion(dto.getPosicion());
-        jugador.setDorsal(dto.getDorsal());
-        jugador.setFechaNac(dto.getFechaNac());
-        jugador.setNacionalidad(dto.getNacionalidad());
-
-        if (dto.getIdEquipo() != null) {
-            Equipo equipo = new Equipo();
-            equipo.setIdEquipo(dto.getIdEquipo());
-            jugador.setEquipo(equipo);
-        }
-
-        return jugador;
+    public List<JugadorDto> obtenerJugadoresConMasDeXGoles(Integer golesMinimos) {
+        return jugadorRepository.findJugadoresConGolesMayoresA(golesMinimos)
+                .stream().map(this::convertirADto).collect(Collectors.toList());
     }
 }

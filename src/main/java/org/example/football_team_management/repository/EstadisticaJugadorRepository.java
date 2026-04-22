@@ -12,12 +12,7 @@ import java.util.List;
 @Repository
 public interface EstadisticaJugadorRepository extends JpaRepository<EstadisticaJugador, Long> {
 
-    // Total goles de un equipo en todos sus partidos
-    @Query(value = """
-        SELECT SUM(e.goles)
-        FROM estadistica_jugador e
-        JOIN jugador j ON j.id_jugador = e.id_jugador
-        WHERE j.id_equipo = :idEquipo
-    """, nativeQuery = true)
-    Integer totalGolesEquipo(@Param("idEquipo") int idEquipo);
+
+
+
 }

@@ -2,25 +2,16 @@ package org.example.football_team_management.service;
 
 import org.example.football_team_management.dto.PartidoDto;
 import org.example.football_team_management.dto.ResultadoPartidoDTO;
-
 import java.util.List;
+import java.util.Map;
 
 public interface PartidoService {
-
-    // Lista todos los partidos
     List<PartidoDto> listar();
-
-
-    // Guarda un nuevo partido
-    PartidoDto guardar(PartidoDto partido);
-
-    // Elimina un partido por id
+    PartidoDto guardar(PartidoDto dto);
+    PartidoDto actualizar(Long id, PartidoDto dto);
     void eliminar(Long id);
 
-    // Actualiza un partido existente
-    PartidoDto actualizar(Long id, PartidoDto partido);
-
-    Integer getTotalGolesByEquipo(Integer equipoId);
-    List<ResultadoPartidoDTO> getResultadosConNombres();
-
+    // Consultas nativas
+    Integer obtenerTotalGolesEquipo(Long equipoId);
+    List<ResultadoPartidoDTO> obtenerResultadosConNombres();
 }

@@ -1,7 +1,6 @@
 package org.example.football_team_management.controller;
 
 import org.example.football_team_management.dto.JugadorDto;
-import org.example.football_team_management.model.Jugador;
 import org.example.football_team_management.service.JugadorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,15 +48,12 @@ public class JugadorController {
 
     // CONSULTAS NATIVAS
 
-    // GET /api/jugadores/equipo/{equipoId}
     @GetMapping("/equipo/{equipoId}")
-    public ResponseEntity<List<Jugador>> getJugadoresByEquipo(@PathVariable Integer equipoId) {
-        return ResponseEntity.ok(jugadorService.getJugadoresByEquipo(equipoId));
+    public ResponseEntity<List<JugadorDto>> jugadoresPorEquipo(@PathVariable Long equipoId) {
+        return ResponseEntity.ok(jugadorService.obtenerJugadoresPorEquipo(equipoId));
     }
-
-    // GET /api/jugadores/goles-mayores?minGoles=5
     @GetMapping("/goles-mayores")
-    public ResponseEntity<List<Jugador>> getJugadoresConGolesMayores(@RequestParam Integer minGoles) {
-        return ResponseEntity.ok(jugadorService.getJugadoresWithGoalsGreaterThan(minGoles));
+    public ResponseEntity<List<JugadorDto>> jugadoresConMasGoles(@RequestParam Integer minGoles) {
+        return ResponseEntity.ok(jugadorService.obtenerJugadoresConMasDeXGoles(minGoles));
     }
 }

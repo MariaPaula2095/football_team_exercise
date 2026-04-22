@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/partidos")
@@ -19,14 +20,22 @@ public class PartidoController {
         this.partidoService = partidoService;
     }
 
-    @GetMapping("/listar")
+    // CRUD endpoints
+    @GetMapping ("/listar")
     public ResponseEntity<List<PartidoDto>> listar() {
         return ResponseEntity.ok(partidoService.listar());
     }
 
-    @PostMapping("/guardar")
-    public ResponseEntity<PartidoDto> guardar(@RequestBody PartidoDto dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(partidoService.guardar(dto));
+    @PostMapping ("/guardar")
+    public ResponseEntity<PartidoDto> crear(@RequestBody PartidoDto partidoDto) {
+        PartidoDto nuevo = partidoService.guardar(partidoDto);
+        return new ResponseEntity<>(nuevo, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/actualizar(/{id}")
+    public ResponseEntity<PartidoDto> actualizar(@PathVariable Long id, @RequestBody PartidoDto partidoDto) {
+        PartidoDto actualizado = partidoService.actualizar(id, partidoDto);
+        return ResponseEntity.ok(actualizado);
     }
 
     @DeleteMapping("/eliminar/{id}")
@@ -35,20 +44,17 @@ public class PartidoController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/actualizar/{id}")
-    public ResponseEntity<PartidoDto> actualizar(@PathVariable Long id, @RequestBody PartidoDto dto) {
-        return ResponseEntity.ok(partidoService.actualizar(id, dto));
+    // Consulta nativa #3: GET /api/partidos/total-goles/{equipoId}
+
+    @GetMapping("/total-goles-Por/{equipoId}")   // ← nombre correcto
+    public ResponseEntity<Integer> obtenerTotalGolesEquipo(@PathVariable("equipoId") Long equipoId) {
+        Integer total = partidoService.obtenerTotalGolesEquipo(equipoId);
+        return ResponseEntity.ok(total);
     }
 
-    // GET /api/partidos/total-goles/{equipoId}
-    @GetMapping("/total-goles/{equipoId}")
-    public ResponseEntity<Integer> getTotalGolesEquipo(@PathVariable Integer equipoId) {
-        return ResponseEntity.ok(partidoService.getTotalGolesByEquipo(equipoId));
-    }
-
-    // GET /api/partidos/resultados
+    // Consulta nativa #4: GET /api/partidos/resultados
     @GetMapping("/resultados")
-    public ResponseEntity<List<ResultadoPartidoDTO>> getResultados() {
-        return ResponseEntity.ok(partidoService.getResultadosConNombres());
+    public ResponseEntity<List<ResultadoPartidoDTO>> obtenerResultadosConNombres() {
+        return ResponseEntity.ok(partidoService.obtenerResultadosConNombres());
     }
 }

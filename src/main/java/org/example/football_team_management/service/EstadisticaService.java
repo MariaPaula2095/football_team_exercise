@@ -5,9 +5,17 @@ import org.example.football_team_management.dto.EstadisticasJugadorDto;
 import java.util.List;
 
 public interface EstadisticaService {
-    EstadisticasJugadorDto guardar(EstadisticasJugadorDto dto);
+
     List<EstadisticasJugadorDto> listar();
-    Integer totalGolesEquipo(int idEquipo);
+
+    // Guarda un nuevo equipo
+    EstadisticasJugadorDto guardar(EstadisticasJugadorDto estadisticasJugadorDto);
+
+    // Elimina un equipo por id
+    void eliminar(Long id);
+
+    // Actualiza un equipo existente
+    EstadisticasJugadorDto actualizar(Long id, EstadisticasJugadorDto estadisticasJugadorDto);
 }
 
 
