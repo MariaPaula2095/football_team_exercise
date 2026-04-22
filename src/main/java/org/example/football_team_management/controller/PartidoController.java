@@ -32,7 +32,7 @@ public class PartidoController {
         return new ResponseEntity<>(nuevo, HttpStatus.CREATED);
     }
 
-    @PutMapping("/actualizar(/{id}")
+    @PutMapping("/actualizar/{id}")
     public ResponseEntity<PartidoDto> actualizar(@PathVariable Long id, @RequestBody PartidoDto partidoDto) {
         PartidoDto actualizado = partidoService.actualizar(id, partidoDto);
         return ResponseEntity.ok(actualizado);
